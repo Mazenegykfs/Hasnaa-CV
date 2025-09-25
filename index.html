@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Amira Elshinawy - Curriculum Vitae</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts for typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Libraries for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Custom styles for the CV */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb, #90caf9);
+        }
+        .ar-lang {
+            font-family: 'Cairo', sans-serif;
+        }
+        /* Smooth transitions for sidebar and main content */
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        .main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+        /* Style for the active navigation link */
+        .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #0d47a1;
+            transform: scale(1.05);
+        }
+        /* Glassmorphism effect for content cards */
+        .section-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        /* Style for the active language button */
+        .lang-btn.active {
+            background-color: #1976d2;
+            color: white;
+        }
+        /* Top header bar style */
+        .header {
+            background-color: #0d47a1;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+        /* Hides the business card element used for PDF generation */
+        #business-card-container {
+            position: fixed;
+            left: -9999px; /* Position off-screen */
+            top: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Control Buttons -->
+    <div class="fixed top-4 left-4 z-50 flex space-x-2">
+        <!-- Generate PDF Button -->
+        <button id="generate-pdf-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg transition-all duration-300 flex items-center justify-center shadow-md text-sm">
+            <i class="fas fa-id-card mr-2"></i> <span id="pdf-btn-text">Card</span>
+        </button>
+        <!-- Show QR Code Button -->
+        <button id="show-qr-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg transition-all duration-300 flex items-center justify-center shadow-md text-sm">
+            <i class="fas fa-qrcode mr-2"></i> <span>QR</span>
+        </button>
+    </div>
+
+    <!-- Language Switcher -->
+    <div class="fixed top-4 right-4 z-50">
+        <div class="flex justify-center space-x-2">
+            <button id="lang-en" class="lang-btn py-1 px-3 rounded-lg bg-white/30 backdrop-blur-sm text-sm font-semibold text-blue-900 border border-white/40 hover:bg-white/50 transition-all shadow-md">English</button>
+            <button id="lang-ar" class="lang-btn py-1 px-3 rounded-lg bg-white/30 backdrop-blur-sm text-sm font-semibold text-blue-900 border border-white/40 hover:bg-white/50 transition-all shadow-md">العربية</button>
+        </div>
+    </div>
+
+    <!-- Header Bar -->
+    <header class="header">
+        Developed by Dr. Mazen Badawy – Doctorate of English Teaching & Testing
+    </header>
+
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar w-full md:w-64 bg-blue-700 text-white min-h-screen p-4 shadow-lg fixed md:sticky top-0 flex flex-col">
+            <div class="text-center mb-8">
+                <img src="https://placehold.co/96x96/FFFFFF/0D47A1?text=AE" alt="Dr. Amira Elshinawy" class="w-24 h-24 object-cover rounded-full mx-auto mb-2 border-4 border-blue-500">
+                <h1 id="sidebar-name" class="text-xl font-bold">Dr. Amira Elshinawy</h1>
+                <p id="sidebar-title" class="text-sm text-blue-200">Pharmacist</p>
+            </div>
+            <nav id="nav-menu" class="space-y-2">
+                <!-- Navigation links will be populated by JavaScript -->
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main id="main-content" class="main-content w-full p-4 md:p-8">
+            
+            <!-- Personal Information Section -->
+            <section id="personal-info" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                <div class="en-text">
+                    <div class="text-center mb-6">
+                        <h1 class="text-4xl font-bold text-blue-900">Dr. Amira Elshinawy</h1>
+                        <p class="text-xl text-blue-700">Audiology Initiative Coordinator</p>
+                    </div>
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-user-circle mr-3"></i>Personal Information</h2>
+                    <ul class="space-y-2 text-gray-700">
+                        <li><i class="fas fa-flag w-5 mr-2 text-blue-600"></i><strong>Nationality:</strong> Egyptian</li>
+                        <li><i class="fas fa-calendar-alt w-5 mr-2 text-blue-600"></i><strong>Birth Date:</strong> 21 / 3 / 1981</li>
+                        <li><i class="fas fa-heart w-5 mr-2 text-blue-600"></i><strong>Marital Status:</strong> Married</li>
+                        <li><i class="fas fa-phone w-5 mr-2 text-blue-600"></i><strong>Mobile:</strong> +201004930392</li>
+                        <li><i class="fas fa-envelope w-5 mr-2 text-blue-600"></i><strong>Email:</strong> amirag508@gmail.com</li>
+                    </ul>
+                </div>
+                <div class="ar-text ar-lang">
+                    <div class="text-center mb-6">
+                        <h1 class="text-4xl font-bold text-blue-900">د/ أميرة الشناوي</h1>
+                        <p class="text-xl text-blue-700">منسق مبادرة السمعيات بمديرية الشئون الصحيه بكفر الشيخ</p>
+                    </div>
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-user-circle ml-3"></i>المعلومات الشخصية</h2>
+                    <ul class="space-y-2 text-gray-700 text-right">
+                        <li><i class="fas fa-flag w-5 ml-2 text-blue-600"></i><strong>الجنسية:</strong> مصرية</li>
+                        <li><i class="fas fa-calendar-alt w-5 ml-2 text-blue-600"></i><strong>تاريخ الميلاد:</strong> 21 / 3 / 1981</li>
+                        <li><i class="fas fa-heart w-5 ml-2 text-blue-600"></i><strong>الحالة الاجتماعية:</strong> متزوجة</li>
+                        <li><i class="fas fa-phone w-5 ml-2 text-blue-600"></i><strong>رقم الجوال:</strong> 01004930392</li>
+                        <li><i class="fas fa-envelope w-5 ml-2 text-blue-600"></i><strong>البريد الالكتروني:</strong> amirag508@gmail.com</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Qualifications Section -->
+            <section id="qualifications" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                 <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-graduation-cap mr-3"></i>Qualifications</h2>
+                     <div class="space-y-4">
+                        <p><strong>Bachelor of Pharmaceutical Sciences, 2003</strong> - Alexandria University</p>
+                        <p><strong>Professional Classification Certificate, 2007</strong> - Saudi Commission for Health Specialties, KSA</p>
+                        <p><strong>Diploma in Clinical Pharmacy, 2018</strong> - Very Good</p>
+                        <p><strong>Diploma in Hospital Management, 2020</strong> - Excellent</p>
+                        <p><strong>Diploma in Total Quality Management, 2022</strong> - Grade A</p>
+                    </div>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-graduation-cap ml-3"></i>المؤهلات العلمية</h2>
+                     <div class="space-y-4">
+                        <p><strong>بكالوريوس فى العلوم الصيدلية, 2003</strong> - جامعة الإسكندرية</p>
+                        <p><strong>شهادة التصنيف المهني, 2007</strong> - الهيئه السعوديه للتخصصات الصحيه بالمملكه العربيه السعوديه</p>
+                        <p><strong>دبلوم الصيدله الإكلينيكيه, 2018</strong> - تقدير عام جيد جدا</p>
+                        <p><strong>دبلوم إدارة المستشفيات, 2020</strong> - تقدير عام ممتاز</p>
+                        <p><strong>دبلوم إدارة الجوده الشامله, 2022</strong> - تقدير عام A</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience Section -->
+            <section id="experience" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                 <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-briefcase mr-3"></i>Experience</h2>
+                     <div class="space-y-4">
+                        <p><strong>Initiatives Coordinator</strong> at Directorate of Health Affairs in Kafr El Sheikh (Dec 1, 2024– till now)</p>
+                        <p><strong>IMCI Team Member</strong> within the Directorate of Health Affairs in Kafr El Sheikh</p>
+                        <p><strong>First Coordinator of the Audiology Initiative</strong> at Directorate of Health Affairs (Oct 30, 2019– till now)</p>
+                        <p><strong>Maternal and Child Care Administration</strong> at Directorate of Health Affairs (Sep 3, 2018)</p>
+                        <p><strong>Planning Department</strong> at Directorate of Health Affairs in Kafr El Sheikh (May 15, 2017 - Sep 2, 2018)</p>
+                        <p><strong>Pharmacist</strong> at Primary Health Care Units in Hail, KSA (2010 - 2016)</p>
+                        <p><strong>Pharmacist</strong> at Kafr El Sheikh Liver and Heart Disease Research Center (Oct 5, 2004 - Sep 21, 2008)</p>
+                        <p><strong>Assignment at Directorate of Health Affairs and Population</strong> in the Pharmacy Department (Aug 16, 2004)</p>
+                     </div>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-briefcase ml-3"></i>التدرج الوظيفى</h2>
+                     <div class="space-y-4">
+                        <p><strong>العمل بإدارة المبادرات</strong> بمديرية الشؤن الصحيه بكفر الشيخ (1/ 12/ 2024 وحتي الان)</p>
+                        <p><strong>التكليف للعمل ضمن فريق Imci</strong> داخل ديوان مديرية الشئون الصحيه بكفر الشيخ</p>
+                        <p><strong>المنسق الأول لمبادرة السمعيات</strong> بمديرية الشئون الصحيه (30/10 /2019 وحتي الان)</p>
+                        <p><strong>العمل بإدارة رعاية الأمومه والطفوله</strong> بمديرية الشئون الصحيه بكفر الشيخ (3/ 9/ 2018)</p>
+                        <p><strong>العمل بإدارة التخطيط</strong> بمديرية الشئون الصحيه بكفر الشيخ (15/ 5/ 2017 وحتي 2/9 / 2018)</p>
+                        <p><strong>العمل بوحدات الرعايه الصحيه بحائل</strong> بالشئون الصحيه بالمملكه العربيه السعوديه (2010 - 2016)</p>
+                        <p><strong>إنتداب كصيدلانية</strong> بمركز أبحاث أمراض الكبد والقلب بكفر الشيخ (5 / 10 / 2004 حتي 21 / 9 / 2008)</p>
+                        <p><strong>تكليف فى مديرية الشئون الصحية والسكان</strong> بتاريخ 16 / 8/ 2004 فى إدارة الصيدلة</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Promotions Section -->
+            <section id="promotions" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-award mr-3"></i>Promotions</h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>Promoted to the second grade as of 1/7/2013 by decision No. (40) for the year 2014.</li>
+                        <li>Promoted to the first grade as of 1/7/2019 by virtue of decision No. (160) issued on 27/10/2019.</li>
+                        <li>Received the Master's degree incentive by virtue of decision No. (236) 2021 on 17/6/2021.</li>
+                    </ul>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-award ml-3"></i>الترقيات</h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>حصلت علي ترقية الدرجه الثانيه اعتبارا من 1/7/ 2013 بقرار رقم (40 ) لسنه 2014</li>
+                        <li>حصلت علي ترقية الدرجه الأولي اعتبارا من 1/ 7 / 2019 بموجب القرار( 160 ) الصادر في 27 / 10 / 2019</li>
+                        <li>حصلت علي حافز الماجستير بموجب القرار رقم (236 ) 2021 في17/6 / 2021</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Nominations Section -->
+            <section id="nominations" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-tasks mr-3"></i>Ministry of Health Nominations</h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>Passed the Nutrition Counseling course (TOT) of the General Administration of Motherhood and Childhood at the Ministry of Health and Population (5/3/2023 - 8/3/2023).</li>
+                        <li>Passed the Certified Family Counseling Trainer course (TOT) at Princess Fatima Academy (25/8/2024 - 29/8/2024).</li>
+                    </ul>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-tasks ml-3"></i>ترشيحات من وزارة الصحة</h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>اجتياز دورة مشورة التغديه (TOT ) التابعه للإداره العامه للأمومه والطفوله بوزاره الصحه والسكان في الفتره من 5 / 3 / 2023 إلي 8 / 3 / 2023</li>
+                        <li>إجتياز دورة مدرب المشوره الأسريه المعتمد (TOT ) في أكاديمية الأميره فاطمه بتاريخ 25 / 8 / 2024 إلي 29 / 8 / 2024</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Conferences Section -->
+            <section id="conferences" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-bullhorn mr-3"></i>Conferences & Initiatives</h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>Conference on Liver & GIT Problems & Solutions (2005)</li>
+                        <li>Annual Conference for the Study of Liver and Gastrointestinal Diseases (2006, 2007)</li>
+                        <li>Multiple Pharmaceutical Care Symposia in Hail, KSA (2010, 2011)</li>
+                        <li>Third Annual Scientific Conference of Pharmacy (2016)</li>
+                        <li>HIV Protocol Workshop (2018)</li>
+                        <li>15th Annual Grand Clinical Round (2018)</li>
+                        <li>Second Annual Conference of Pediatric Neurology (2018)</li>
+                        <li>Early detection of non-communicable diseases training (2019)</li>
+                        <li>Fourth Annual Scientific Conference of Chest Diseases (2021)</li>
+                        <li>Fourth Annual BALTIM DERMA Conference (2025)</li>
+                    </ul>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-bullhorn ml-3"></i>المؤتمرات والمبادرات</h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>مؤتمر مشاكل الكبد وأمراض الجهاز الهضمي والحلول المطروحة لها (2005)</li>
+                        <li>المؤتمر السنوي لدراسة الجديد حول الكبد وأمراض الجهاز الهضمي (2006, 2007)</li>
+                        <li>ندوات الرعاية الصيدلية بحائل، السعودية (2010, 2011)</li>
+                        <li>حضور المؤتمر العلمي السنوي الثالث للصيدله (2016)</li>
+                        <li>حضور ورشة عمل خاصه ببروتوكول التعرض ل HIV (2018)</li>
+                        <li>المؤتمر الخامس عشر Annual Grand Clinical ROUND (2018)</li>
+                        <li>المؤتمر السنوي الثاني لطب أعصاب الأطفال (2018)</li>
+                        <li>تدريب الكشف المبكر عن الأمراض غير الساريه (2019)</li>
+                        <li>المؤتمر العلمي السنوي الرابع للصدر (2021)</li>
+                        <li>حضور المؤتمر السنوي الرابع BALTIM DERMA (2025)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Training Courses Section -->
+            <section id="training-courses" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                 <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-chalkboard-teacher mr-3"></i>Training Courses</h2>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>Emergency Cases In General Practice (2009)</li>
+                        <li>Infection Prevention & Control in Health Care Setting (2009)</li>
+                        <li>Diabetes Mellitus Prevention & Control in Primary Health Care Practice (2010)</li>
+                        <li>Basic Life Support Provider Course (2011)</li>
+                        <li>Information Systems and Technology (2018)</li>
+                        <li>Comprehensive Quality Application (2018)</li>
+                        <li>Principles of Results-Based Management - Ministry of Health</li>
+                        <li>Occupational Safety and Health (2019)</li>
+                        <li>Hospital Inspector Preparation Program (2019)</li>
+                        <li>Digital Transformation (2021)</li>
+                        <li>Antibiotic Dispensing Program Workshop</li>
+                        <li>Management and Leadership (2025)</li>
+                    </ul>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-chalkboard-teacher ml-3"></i>الدورات التدريبية</h2>
+                     <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>دورة الحالات الطارئة في الممارسة العامة (2009)</li>
+                        <li>دورة مكافحة العدوى وتلافيها في المنشئات الصحية (2009)</li>
+                        <li>دورة الوقاية والتحكم بمرض السكر في الرعاية الصحية الأولية (2010)</li>
+                        <li>دورة الإنعاش القلبي الرئوي (2011)</li>
+                        <li>إجتياز الدوره التدريبيه في نظم وتكنولوجيا المعلومات (2018)</li>
+                        <li>إتمام دورة تطبيق الجوده الشامله (2018)</li>
+                        <li>دورة مبادئ الإداره القائمه علي النتائج التابعه لوزارة الصحه والسكان</li>
+                        <li>حضور البرنامج التدريبي (السلامه والصحه المهنيه) (2019)</li>
+                        <li>إجتياز برنامج إعداد المفتشين علي المستشفيات (2019)</li>
+                        <li>إجتياز دورة التحول الرقمي (2021)</li>
+                        <li>إجتياز ورشة العمل الخاصه ببرنامج صرف المضادات الحيويه</li>
+                        <li>حضور دورة الإداره والقياده (2025)</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- Skills Section -->
+            <section id="skills" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-laptop-code mr-3"></i>Skills</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-700 mb-2">General Abilities</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>Fluent in English (Written & Spoken)</li>
+                                <li>Excellent Communication & Report Writing</li>
+                                <li>Ambitious in learning</li>
+                                <li>Capable of working hard & in team work</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-700 mb-2">Computer Skills</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>MS-WINDOWS XP</li>
+                                <li>Microsoft Word XP</li>
+                                <li>Microsoft Excel XP</li>
+                                <li>Internet</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-laptop-code ml-3"></i>المهارات</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-700 mb-2">القدرات العامة</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>إجادة اللغة الإنجليزية (كتابة وتحدث)</li>
+                                <li>مهارات تواصل وكتابة تقارير ممتازة</li>
+                                <li>طموحة في التعلم</li>
+                                <li>القدرة على العمل الجاد والعمل الجماعي</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-700 mb-2">مهارات الحاسوب</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li>MS-WINDOWS XP</li>
+                                <li>Microsoft Word XP</li>
+                                <li>Microsoft Excel XP</li>
+                                <li>الإنترنت</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- General Activities Section -->
+            <section id="general-activities" class="mb-8 section-card p-6 rounded-2xl shadow-md">
+                <div class="en-text">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-users mr-3"></i>General Activities</h2>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">Board Member, Society for Environment and Community Development</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">Board Member, Friends of the Underprivileged Patients</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">Board of Trustees Member, Kafr El Sheikh Educational Administration</span>
+                    </div>
+                </div>
+                <div class="ar-text ar-lang text-right">
+                    <h2 class="text-3xl font-bold text-blue-800 border-b-4 border-blue-500 pb-2 mb-4 flex items-center"><i class="fas fa-users ml-3"></i>أنشطة عامة</h2>
+                    <div class="flex flex-wrap gap-4 justify-end">
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">عضوه مجلس إدارة جمعية تنمية البيئة والمجتمع بكفر الشيخ</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">عضوه في مجلس إدارة أصدقاء المرضى الغيرقادرين</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">عضوه بمجلس الأمناء بإدارة كفر الشيخ التعليمية</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Hidden Business Card Templates for PDF Generation -->
+    <div id="business-card-container">
+        <!-- English Version -->
+        <div id="business-card-en" class="w-[525px] h-[300px] bg-white shadow-lg flex font-sans">
+            <div class="w-2/5 bg-blue-800 text-white p-6 flex flex-col justify-center items-center text-center">
+                <img src="https://placehold.co/80x80/FFFFFF/0D47A1?text=AE" alt="Dr. Amira Elshinawy" class="w-20 h-20 rounded-full mb-3 border-2 border-blue-400">
+                <h2 class="text-2xl font-bold">Dr. Amira Elshinawy</h2>
+                <p class="text-blue-200">Pharmacist</p>
+            </div>
+            <div class="w-3/5 p-4 flex flex-col"> 
+                <!-- Text Content -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-blue-900 border-b-2 border-blue-200 pb-1 mb-2">Affiliation</h3>
+                        <p class="text-sm text-gray-700">Directorate of Health Affairs, Kafr El Sheikh</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-blue-900 border-b-2 border-blue-200 pb-1 mb-2">Contact Details</h3>
+                        <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-phone w-4 mr-2 text-blue-600"></i>+201004930392</p>
+                        <p class="text-sm text-gray-700 flex items-center mt-1"><i class="fas fa-envelope w-4 mr-2 text-blue-600"></i>amirag508@gmail.com</p>
+                    </div>
+                </div>
+                <!-- Spacer to push QR to the bottom -->
+                <div class="flex-grow"></div>
+                <!-- QR Code Container -->
+                <div class="flex justify-start">
+                    <img src="qrcode_mazenegykfs.github.io.png" alt="QR Code" class="w-16 h-16" onerror="this.src='https://placehold.co/64x64/1E293B/FFFFFF?text=QR'">
+                </div>
+            </div>
+        </div>
+        <!-- Arabic Version -->
+        <div id="business-card-ar" class="w-[525px] h-[300px] bg-white shadow-lg flex font-sans ar-lang" dir="rtl">
+            <div class="w-3/5 p-4 flex flex-col text-right">
+                 <!-- Text Content -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-blue-900 border-b-2 border-blue-200 pb-1 mb-2">جهة العمل</h3>
+                        <p class="text-sm text-gray-700">مديرية الشئون الصحيه بكفر الشيخ</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-blue-900 border-b-2 border-blue-200 pb-1 mb-2">معلومات الاتصال</h3>
+                        <p class="text-sm text-gray-700 flex items-center justify-end mt-1"><i class="fas fa-phone w-4 ml-2 text-blue-600"></i>٠١٠٠٤٩٣٠٣٩٢</p>
+                        <p class="text-sm text-gray-700 flex items-center justify-end"><i class="fas fa-envelope w-4 ml-2 text-blue-600"></i>amirag508@gmail.com</p>
+                    </div>
+                </div>
+                <!-- Spacer to push QR to the bottom -->
+                <div class="flex-grow"></div>
+                <!-- QR Code Container -->
+                <div class="flex justify-end">
+                     <img src="qrcode_mazenegykfs.github.io.png" alt="QR Code" class="w-16 h-16" onerror="this.src='https://placehold.co/64x64/1E293B/FFFFFF?text=QR'">
+                </div>
+            </div>
+            <div class="w-2/5 bg-blue-800 text-white p-6 flex flex-col justify-center items-center text-center">
+                <img src="https://placehold.co/80x80/FFFFFF/0D47A1?text=AE" alt="د/ أميرة الشناوي" class="w-20 h-20 rounded-full mb-3 border-2 border-blue-400">
+                <h2 class="text-2xl font-bold">د/ أميرة الشناوي</h2>
+                <p class="text-blue-200">صيدلانية</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- QR Code Modal -->
+    <div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100] hidden transition-opacity duration-300">
+        <div class="relative bg-white p-4 rounded-lg shadow-xl max-w-sm w-full mx-4">
+            <button id="close-modal-btn" class="absolute -top-3 -right-3 text-white bg-red-500 rounded-full h-8 w-8 flex items-center justify-center text-xl font-bold hover:bg-red-600 transition-colors">&times;</button>
+            <img src="qrcode_mazenegykfs.github.io.png" alt="QR Code" class="w-full h-auto" onerror="this.src='https://placehold.co/300x300/CCCCCC/FFFFFF?text=QR+Code+Not+Found'">
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get necessary DOM elements
+            const sections = document.querySelectorAll('main section');
+            const navMenu = document.getElementById('nav-menu');
+            const langEnBtn = document.getElementById('lang-en');
+            const langArBtn = document.getElementById('lang-ar');
+            const sidebarName = document.getElementById('sidebar-name');
+            const sidebarTitle = document.getElementById('sidebar-title');
+            const pdfBtnText = document.getElementById('pdf-btn-text');
+            const generatePdfBtn = document.getElementById('generate-pdf-btn');
+            const { jsPDF } = window.jspdf;
+            
+            // QR Code Modal elements
+            const showQrBtn = document.getElementById('show-qr-btn');
+            const qrModal = document.getElementById('qr-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+
+            // Translations for dynamic content
+            const translations = {
+                en: {
+                    name: "Dr. Amira Elshinawy",
+                    title: "Pharmacist",
+                    cardBtn: "Card",
+                    sections: {
+                        'personal-info': { text: "Personal Info", icon: "fas fa-user-circle" },
+                        'qualifications': { text: "Qualifications", icon: "fas fa-graduation-cap" },
+                        'experience': { text: "Experience", icon: "fas fa-briefcase" },
+                        'promotions': { text: "Promotions", icon: "fas fa-award" },
+                        'nominations': { text: "Nominations", icon: "fas fa-tasks" },
+                        'conferences': { text: "Conferences", icon: "fas fa-bullhorn" },
+                        'training-courses': { text: "Training Courses", icon: "fas fa-chalkboard-teacher" },
+                        'skills': { text: "Skills", icon: "fas fa-laptop-code" },
+                        'general-activities': { text: "General Activities", icon: "fas fa-users" }
+                    }
+                },
+                ar: {
+                    name: "د/ أميرة الشناوي",
+                    title: "صيدلانية",
+                    cardBtn: "بطاقة",
+                    sections: {
+                        'personal-info': { text: "المعلومات الشخصية", icon: "fas fa-user-circle" },
+                        'qualifications': { text: "المؤهلات العلمية", icon: "fas fa-graduation-cap" },
+                        'experience': { text: "التدرج الوظيفى", icon: "fas fa-briefcase" },
+                        'promotions': { text: "الترقيات", icon: "fas fa-award" },
+                        'nominations': { text: "الترشيحات", icon: "fas fa-tasks" },
+                        'conferences': { text: "المؤتمرات", icon: "fas fa-bullhorn" },
+                        'training-courses': { text: "الدورات التدريبية", icon: "fas fa-chalkboard-teacher" },
+                        'skills': { text: "المهارات", icon: "fas fa-laptop-code" },
+                        'general-activities': { text: "أنشطة عامة", icon: "fas fa-users" }
+                    }
+                }
+            };
+
+            // Function to update the navigation menu based on the selected language
+            function updateNav(lang) {
+                const sectionData = translations[lang].sections;
+                navMenu.innerHTML = '';
+                Object.keys(sectionData).forEach(id => {
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.classList.add('sidebar-link', 'block', 'py-2', 'px-4', 'rounded-lg', 'hover:bg-blue-600', 'transition-all', 'duration-200', 'flex', 'items-center');
+                    link.dataset.sectionId = id;
+                    
+                    if (lang === 'ar') {
+                        link.innerHTML = `${sectionData[id].text} <i class="${sectionData[id].icon} ml-3"></i>`;
+                        link.classList.add('text-right', 'justify-end');
+                    } else {
+                        link.innerHTML = `<i class="${sectionData[id].icon} mr-3"></i> ${sectionData[id].text}`;
+                    }
+                    navMenu.appendChild(link);
+                });
+            }
+
+            // Function to switch the language of the entire page
+            function switchLanguage(lang) {
+                document.documentElement.lang = lang;
+                const isAr = lang === 'ar';
+
+                // Toggle visibility of English and Arabic text blocks
+                document.querySelectorAll('.en-text').forEach(el => el.style.display = isAr ? 'none' : 'block');
+                document.querySelectorAll('.ar-text').forEach(el => el.style.display = isAr ? 'block' : 'none');
+
+                // Adjust layout for Right-To-Left (RTL) if Arabic is selected
+                document.body.dir = isAr ? 'rtl' : 'ltr';
+                document.getElementById('sidebar').style.textAlign = isAr ? 'right' : 'left';
+                document.getElementById('main-content').style.marginLeft = isAr ? '0' : '';
+                document.getElementById('main-content').style.marginRight = isAr ? 'auto' : ''; 
+                
+                // Update active state of language buttons
+                langEnBtn.classList.toggle('active', !isAr);
+                langArBtn.classList.toggle('active', isAr);
+
+                // Update translatable text content
+                sidebarName.textContent = translations[lang].name;
+                sidebarTitle.textContent = translations[lang].title;
+                pdfBtnText.textContent = translations[lang].cardBtn;
+                updateNav(lang);
+                updateActiveLink(); // Re-check active link after nav is rebuilt
+             }
+
+            // Function to highlight the current section in the sidebar on scroll
+            function updateActiveLink() {
+               let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    // 60px offset for better accuracy with fixed header/elements
+                    if (window.pageYOffset >= sectionTop - 60) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.sectionId === current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // Function to generate and download the business card as a PDF
+            function generatePDF() {
+                const currentLang = document.documentElement.lang;
+                const cardElementId = currentLang === 'ar' ? 'business-card-ar' : 'business-card-en';
+                const cardElement = document.getElementById(cardElementId);
+                const originalButtonText = pdfBtnText.textContent;
+                
+                // Provide user feedback during PDF generation
+                pdfBtnText.textContent = currentLang === 'ar' ? 'جاري الإنشاء...' : 'Generating...';
+                generatePdfBtn.disabled = true;
+
+                // Use html2canvas to render the element to a canvas
+                html2canvas(cardElement, { scale: 3, useCORS: true }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'px',
+                        format: [525, 300] // Match business card dimensions
+                    });
+                    pdf.addImage(imgData, 'PNG', 0, 0, 525, 300);
+                    pdf.save('Dr-Amira-Elshinawy-Business-Card.pdf');
+
+                    // Restore button state after generation
+                    pdfBtnText.textContent = originalButtonText;
+                    generatePdfBtn.disabled = false;
+                }).catch(err => {
+                    console.error("Failed to generate PDF:", err);
+                    // Restore button state on error
+                    pdfBtnText.textContent = originalButtonText;
+                    generatePdfBtn.disabled = false;
+                });
+            }
+            
+            // --- QR Code Modal Logic ---
+            function showQrModal() {
+                qrModal.classList.remove('hidden');
+            }
+            
+            function hideQrModal() {
+                qrModal.classList.add('hidden');
+            }
+
+            // Event Listeners
+            langEnBtn.addEventListener('click', () => switchLanguage('en'));
+            langArBtn.addEventListener('click', () => switchLanguage('ar'));
+            generatePdfBtn.addEventListener('click', generatePDF);
+            window.addEventListener('scroll', updateActiveLink);
+            
+            // QR Code Modal Event Listeners
+            showQrBtn.addEventListener('click', showQrModal);
+            closeModalBtn.addEventListener('click', hideQrModal);
+            qrModal.addEventListener('click', (event) => {
+                // Close modal if the background is clicked, but not the content inside it
+                if (event.target === qrModal) {
+                    hideQrModal();
+                }
+            });
+
+
+            // Initial setup on page load
+            switchLanguage('en'); // Default to English
+            updateActiveLink();
+        });
+    </script>
+</body>
+</html>
+
+

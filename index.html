@@ -125,6 +125,10 @@
         <button id="show-qr-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg transition-all duration-300 flex items-center justify-center shadow-md text-sm">
             <i class="fas fa-qrcode mr-2"></i> <span>QR</span>
         </button>
+        <!-- Export CV Button -->
+        <button id="generate-cv-pdf-btn" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded-lg transition-all duration-300 flex items-center justify-center shadow-md text-sm">
+            <i class="fas fa-file-pdf mr-2"></i> <span id="cv-pdf-btn-text">Export CV</span>
+        </button>
     </div>
 
     <!-- Language Switcher -->
@@ -320,6 +324,8 @@
             const sidebarTitle = document.getElementById('sidebar-title');
             const pdfBtnText = document.getElementById('pdf-btn-text');
             const generatePdfBtn = document.getElementById('generate-pdf-btn');
+            const cvPdfBtnText = document.getElementById('cv-pdf-btn-text');
+            const generateCvPdfBtn = document.getElementById('generate-cv-pdf-btn');
             const { jsPDF } = window.jspdf;
             
             // QR Code Modal elements
@@ -430,6 +436,7 @@
                     name: "Dr. Hasnaa Ghazy",
                     title: "Researcher",
                     cardBtn: "Card",
+                    cvPdfBtn: "Export CV",
                     sections: {
                         'personal-info': { text: "Personal Info", icon: "fas fa-user-circle" },
                         'qualifications': { text: "Qualifications", icon: "fas fa-graduation-cap" },
@@ -440,6 +447,7 @@
                     name: "د/ حسناء غازي",
                     title: "باحث",
                     cardBtn: "بطاقة",
+                    cvPdfBtn: "تصدير السيرة الذاتية",
                     sections: {
                         'personal-info': { text: "البيانات الشخصية", icon: "fas fa-user-circle" },
                         'qualifications': { text: "المؤهل العلمي", icon: "fas fa-graduation-cap" },
@@ -459,8 +467,8 @@
                     link.dataset.sectionId = id;
                     
                     if (lang === 'ar') {
-                        link.innerHTML = `${sectionData[id].text} <i class="${sectionData[id].icon} ml-3"></i>`;
-                        link.classList.add('text-right', 'justify-end');
+                        link.innerHTML = `${sectionData[id].text} <i class="${sectionData[id].icon} mr-3"></i>`;
+                         link.classList.add('text-right', 'justify-start');
                     } else {
                         link.innerHTML = `<i class="${sectionData[id].icon} mr-3"></i> ${sectionData[id].text}`;
                     }
@@ -491,6 +499,7 @@
                 sidebarName.textContent = translations[lang].name;
                 sidebarTitle.textContent = translations[lang].title;
                 pdfBtnText.textContent = translations[lang].cardBtn;
+                cvPdfBtnText.textContent = translations[lang].cvPdfBtn;
                 updateNav(lang);
                 updateActiveLink(); // Re-check active link after nav is rebuilt
              }
@@ -515,7 +524,7 @@
             }
 
             // Function to generate and download the business card as a PDF
-            function generatePDF() {
+            function generateCardPDF() {
                 const currentLang = document.documentElement.lang;
                 const cardElementId = currentLang === 'ar' ? 'business-card-ar' : 'business-card-en';
                 const cardElement = document.getElementById(cardElementId);
@@ -547,6 +556,61 @@
                 });
             }
 
+            // --- Full CV PDF Generation ---
+            async function generateCVPDF() {
+                const currentLang = document.documentElement.lang;
+                const cvContent = document.getElementById('main-content');
+                const originalButtonText = cvPdfBtnText.textContent;
+                const pdfFileName = 'Dr-Hasnaa-Ghazy-CV.pdf';
+                
+                cvPdfBtnText.textContent = currentLang === 'ar' ? 'جاري التصدير...' : 'Exporting...';
+                generateCvPdfBtn.disabled = true;
+
+                // Temporarily remove shadows for a cleaner PDF capture
+                const cardSections = cvContent.querySelectorAll('.section-card');
+                cardSections.forEach(s => s.style.boxShadow = 'none');
+
+                try {
+                    const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+                    const pageHeight = pdf.internal.pageSize.getHeight();
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const margin = 15;
+                    const contentWidth = pageWidth - (margin * 2);
+                    let y = margin; 
+
+                    const sectionElements = Array.from(cvContent.querySelectorAll('section'));
+
+                    for (const section of sectionElements) {
+                        const canvas = await html2canvas(section, { scale: 2, useCORS: true });
+                        
+                        const imgData = canvas.toDataURL('image/png');
+                        const imgWidth = canvas.width;
+                        const imgHeight = canvas.height;
+                        
+                        // Calculate the height of the image in the PDF to maintain aspect ratio
+                        const pdfImageHeight = (imgHeight * contentWidth) / imgWidth;
+
+                        // If adding the new section overflows the page, add a new page
+                        if (y + pdfImageHeight > pageHeight - margin) {
+                            pdf.addPage();
+                            y = margin; // Reset y position for the new page
+                        }
+
+                        pdf.addImage(imgData, 'PNG', margin, y, contentWidth, pdfImageHeight);
+                        y += pdfImageHeight + 10; // Move y down for the next image, with a 10mm gap
+                    }
+                    
+                    pdf.save(pdfFileName);
+                } catch (err) {
+                    console.error("CV PDF generation failed:", err);
+                } finally {
+                    // Restore shadows after PDF generation is complete or fails
+                    cardSections.forEach(s => s.style.boxShadow = '');
+                    cvPdfBtnText.textContent = originalButtonText;
+                    generateCvPdfBtn.disabled = false;
+                }
+            }
+
             // --- Theme Switcher Logic ---
             function applyTheme(themeName) {
                 const selectedTheme = themes[themeName];
@@ -575,7 +639,8 @@
             // Event Listeners
             langEnBtn.addEventListener('click', () => switchLanguage('en'));
             langArBtn.addEventListener('click', () => switchLanguage('ar'));
-            generatePdfBtn.addEventListener('click', generatePDF);
+            generatePdfBtn.addEventListener('click', generateCardPDF);
+            generateCvPdfBtn.addEventListener('click', generateCVPDF);
             window.addEventListener('scroll', updateActiveLink);
             
             // QR Code Modal Event Listeners
@@ -605,10 +670,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
